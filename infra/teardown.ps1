@@ -24,7 +24,8 @@ if (-not $Yes) {
 }
 & $az cognitiveservices account delete --name $name --resource-group $rg
 if ($LASTEXITCODE -ne 0) { throw "Account delete failed; .env kept so you can retry." }
-& $az cognitiveservices account purge --name $name --resource-group $rg --location $loc
+$ErrorActionPreference = "Continue"   # Windows PowerShell 5.1 turns native stderr into a terminating error under "Stop"
+& $az cognitiveservices account purge --name $name --resource-group $rg --location $loc 2>$null
 if ($LASTEXITCODE -ne 0) {
   Write-Warning "Purge not permitted for this role. The account is deleted (soft-deleted accounts are not billed); re-provisioning with the same name may need a different -Prefix."
 }
